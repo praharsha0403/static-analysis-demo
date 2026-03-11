@@ -1,13 +1,11 @@
 name: "CodeQL"
-
 on:
   push:
     branches: [ "main", "master" ]
   pull_request:
     branches: [ "main", "master" ]
   schedule:
-    - cron: '30 1 * * 0' # Weekly on Sundays
-
+    - cron: '30 1 * * 0'
 jobs:
   analyze:
     name: Analyze
@@ -16,23 +14,27 @@ jobs:
       actions: read
       contents: read
       security-events: write
-
     strategy:
       fail-fast: false
       matrix:
         language: [ 'java' ]
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+    - name: Build with Maven
+      run: mvn -B compile --no-transfer-progress
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
