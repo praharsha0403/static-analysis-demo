@@ -162,3 +162,4 @@ cat codeql-results.csv
 2. Review PMD findings in `target/pmd.xml`
 3. Read comprehensive analysis in `STATIC_ANALYSIS_REPORT.md`
 4. Compare results in GitHub's Code scanning dashboard
+# static-analysis-demo
