@@ -64,9 +64,6 @@ public class DataProcessor {
         return input == "test"; // Should use .equals()
     }
     
-    // Unused import
-    import java.io.File; // This import is not used
-    
     // Magic numbers
     public double calculateTax(double amount) {
         return amount * 0.0825; // Magic number for tax rate
