@@ -13,7 +13,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
-    if: false  # Temporarily disable all runs
+    # Re-enabled for final check before submission
     permissions:
       actions: read
       contents: read
