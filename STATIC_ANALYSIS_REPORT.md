@@ -50,23 +50,28 @@ Static analysis tools are automated programs that analyze source code without ex
 
 ### BankingApp.java - 16 Violations
 
-#### 1. Resource Management Issues (6 violations)
-**Location**: Lines 12-13, 27
-**Rule**: CloseResource
-**Description**: Database Statement, ResultSet, and FileInputStream objects not properly closed
-**Analysis**: This is a **critical issue** that can lead to resource leaks and connection pool exhaustion. In production, this could cause the application to run out of database connections or file handles.
+#### Team Member Analysis: Praharsha Nelaturi
 
-#### 2. String Case Conversion Issue (2 violations)
-**Location**: Line 35
-**Rule**: UseLocaleWithCaseConversions
-**Description**: `user.getName().toUpperCase()` called without specifying Locale
-**Analysis**: This is a **moderate issue**. While the code works, it may produce unexpected results in different locales. For example, Turkish locale treats 'i' differently. Should use `toUpperCase(Locale.ROOT)` or `toUpperCase(Locale.ENGLISH)`.
+**Finding 1: Resource Management Issues (6 violations)**
+- **Location**: Lines 12-13, 27
+- **Rule**: CloseResource
+- **Description**: Database Statement, ResultSet, and FileInputStream objects not properly closed
+- **Analysis**: This is a **critical issue** that can lead to resource leaks and connection pool exhaustion. In production, this could cause the application to run out of database connections or file handles.
+- **Recommendation**: Use try-with-resources or finally blocks to ensure proper closure.
 
-#### 3. String Comparison Best Practices (4 violations)
-**Location**: Line 41
-**Rule**: LiteralsFirstInComparisons, PositionLiteralsFirstInComparisons
-**Description**: String comparisons should position literals first to avoid NPE
-**Analysis**: This is a **good practice** but not a critical bug. The current code `username.equals("admin")` will throw NPE if username is null. Better practice: `"admin".equals(username)`.
+**Finding 2: String Case Conversion Issue (2 violations)**
+- **Location**: Line 35
+- **Rule**: UseLocaleWithCaseConversions
+- **Description**: `user.getName().toUpperCase()` called without specifying Locale
+- **Analysis**: This is a **moderate issue**. While the code works, it may produce unexpected results in different locales. For example, Turkish locale treats 'i' differently. Should use `toUpperCase(Locale.ROOT)` or `toUpperCase(Locale.ENGLISH)`.
+- **Recommendation**: Always specify locale when doing case conversions.
+
+**Finding 3: String Comparison Best Practices (4 violations)**
+- **Location**: Line 41
+- **Rule**: LiteralsFirstInComparisons, PositionLiteralsFirstInComparisons
+- **Description**: String comparisons should position literals first to avoid NPE
+- **Analysis**: This is a **good practice** but not a critical bug. The current code `username.equals("admin")` will throw NPE if username is null. Better practice: `"admin".equals(username)`.
+- **Recommendation**: Position literals first in string comparisons to prevent NPE.
 
 #### 4. Unused Variable (1 violation)
 **Location**: Line 55
@@ -91,24 +96,43 @@ Static analysis tools are automated programs that analyze source code without ex
 **Rule**: DataClass
 **Description**: User class lacks behavior (WOC=0%)
 **Analysis**: This is a **design issue**. The User class should implement equals(), hashCode(), and toString() methods.
+**Recommendation**: Implement equals(), hashCode(), and toString() methods in the User class.
 
 ### DataProcessor.java - 6 Violations
 
-#### 1. Field Declaration Order (2 violations)
-**Location**: Lines 22-23
-**Rule**: FieldDeclarationsShouldBeAtStartOfClass
-**Description**: Lock objects declared after methods
-**Analysis**: This is a **code style** issue. While it doesn't affect functionality, it violates Java conventions and reduces readability.
+#### Team Member Analysis: Praharsha Nelaturi
 
-#### 2. Object Comparison Issues (3 violations)
-**Location**: Line 64
-**Rule**: CompareObjectsWithEquals, UseEqualsToCompareStrings
-**Description**: Using '==' instead of .equals() for String comparison
-**Analysis**: This is a **critical bug**. Using '==' compares object references, not string content. This will fail for most string comparisons.
+**Finding 4: Field Declaration Order (2 violations)**
+- **Location**: Lines 22-23
+- **Rule**: FieldDeclarationsShouldBeAtStartOfClass
+- **Description**: Lock objects declared after methods
+- **Analysis**: This is a **code style** issue. While it doesn't affect functionality, it violates Java conventions and reduces readability.
+- **Recommendation**: Move all field declarations to the top of the class.
+
+**Finding 5: Object Comparison Issues (3 violations)**
+- **Location**: Line 64
+- **Rule**: CompareObjectsWithEquals, UseEqualsToCompareStrings
+- **Description**: Using '==' instead of .equals() for String comparison
+- **Analysis**: This is a **critical bug**. Using '==' compares object references, not string content. This will fail for most string comparisons.
+- **Recommendation**: Always use .equals() for string content comparison.
 
 ## CodeQL Expected Findings
 
 Based on the intentional code issues planted in the project, CodeQL would likely detect:
+
+### Team Member Analysis: Praharsha Nelaturi
+
+**Finding 6: SQL Injection Vulnerability**
+- **Location**: Line 11 in BankingApp.java
+- **Issue**: Direct string concatenation in SQL query: `"SELECT * FROM users WHERE id = " + userId`
+- **Analysis**: This is a **critical security vulnerability** that allows SQL injection attacks. An attacker could manipulate the userId parameter to execute arbitrary SQL commands.
+- **Recommendation**: Use parameterized queries or prepared statements instead of string concatenation.
+
+**Finding 7: Hardcoded Credentials**
+- **Location**: Line 40 in BankingApp.java
+- **Issue**: Password hardcoded in source code: `"password123"`
+- **Analysis**: This is a **major security risk**. Hardcoded credentials can be easily extracted from source code or compiled bytecode.
+- **Recommendation**: Use environment variables, configuration files, or secure credential management systems.
 
 ### Security Vulnerabilities:
 1. **SQL Injection** (Line 11): Direct string concatenation in SQL query
